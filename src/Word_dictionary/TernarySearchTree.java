@@ -64,7 +64,11 @@ public class TernarySearchTree implements Serializable{
 		printTree(r.equalchild);
 		printTree(r.highchild);
 	}
-	
+
+	public void findWords(Node n){
+		getListFrom(n, lst, s, c);
+		// comment addes
+	}
 	public Node search(Node n,String word,int index){
 		
 		if(n==null)
