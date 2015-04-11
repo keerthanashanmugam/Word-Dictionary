@@ -1,7 +1,10 @@
 package Word_dictionary;
 
+import java.util.List;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Node implements Serializable {
 		/**
@@ -9,20 +12,22 @@ public class Node implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 		char key;
-		String meaning;
-		ArrayList<String> synonyms,antonyms;
+		List<String> meaning;
+		Set<String> synonyms,antonyms;
 		int flag;
 		Node lochild;
 		Node highchild;
 		Node equalchild;
+		String origWord;
 		public Node(char d){
 			lochild=null;
 			highchild=null;
 			equalchild=null;
 			flag=0;
-			meaning=null;
-			synonyms=null;
-			antonyms = null;
+			meaning=new ArrayList<String>();
+			synonyms=new HashSet<String>();
+			antonyms =new HashSet<String>();
+			origWord=null;
 			key=d;
 		}
 		Node(){
@@ -30,19 +35,23 @@ public class Node implements Serializable {
 			highchild=null;
 			equalchild=null;
 			flag=0;
-			meaning=null;
-			synonyms= new ArrayList<String>();
-			antonyms= new ArrayList<String>();
+			meaning=new ArrayList<String>();
+			synonyms=new HashSet<String>();
+			antonyms=new HashSet<String>();
 			
 		}
 		public void copy(Node m){
-			lochild=m.lochild;
-			highchild=m.highchild;
-			equalchild=m.equalchild;
-			flag = m.flag;
-			meaning=m.meaning;
-			synonyms=m.synonyms;
-			antonyms = m.antonyms;
+			//lochild=m.lochild;
+			//highchild=m.highchild;
+			//equalchild=m.equalchild;
+			//flag = m.flag;
+			meaning.add(m.meaning.get(0));
+			for(String s:m.synonyms)
+				synonyms.add(s);
+			for(String s:m.antonyms)
+				antonyms.add(s);
+			
+			origWord=m.origWord;
 		}
 		public void print(){
 			System.out.println(meaning);

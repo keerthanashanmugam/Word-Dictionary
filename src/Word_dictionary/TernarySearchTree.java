@@ -7,8 +7,8 @@ public class TernarySearchTree implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	//private static final long serialVersionUID = -8465116787318420577L;
+	//private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -8465116787318420577L;
 	Node root;
 	
 	public TernarySearchTree(){
@@ -16,7 +16,8 @@ public class TernarySearchTree implements Serializable{
 	}
 
 	public void calInsert(String word,Node real_node){
-		root = this.insert(root, word, real_node);
+		root = this.insert(root, word.toLowerCase(), real_node);
+		
 	}
 	public Node insert(Node r,String word,Node real_node){
 		
@@ -28,8 +29,10 @@ public class TernarySearchTree implements Serializable{
 				}
 			else
 				{
+					
 					r.copy(real_node);
 					r.flag=1;
+					
 				}
 		}
 		else{
@@ -38,9 +41,10 @@ public class TernarySearchTree implements Serializable{
 					r.equalchild = insert(r.equalchild,word.substring(1),real_node);
 				else
 					{
-						
+					
 						r.copy(real_node);
 						r.flag=1;
+						
 					}
 			}
 			else{
@@ -65,8 +69,11 @@ public class TernarySearchTree implements Serializable{
 		printTree(r.highchild);
 	}
 
-	public void findWords(Node n){
-		getListFrom(n, lst, s, c);
+	public void findWords(){
+		ArrayList<String> lst = new ArrayList<String>();
+		
+		getListFrom(root, lst,"",'\0');
+		System.out.println(lst.size()+"==================== "+lst);
 		// comment addes
 	}
 	public Node search(Node n,String word,int index){
@@ -99,7 +106,7 @@ public class TernarySearchTree implements Serializable{
 
 		getListFrom(n.equalchild,lst,s,n.key);
 		getListFrom(n.highchild,lst,s,'\0');
-		
+		return ;
 	}
 	
 	public ArrayList<String> autoComplete(String word,int index){
@@ -108,6 +115,8 @@ public class TernarySearchTree implements Serializable{
 		System.out.println(n.key);
 		ArrayList<String> lst = new ArrayList<String>();
 		word = word.substring(0, word.length()-1);
+		
+		
 		getListFrom(n,lst,word,'\0');
 		return lst;
 		

@@ -33,9 +33,10 @@ public class dataBase {
 	      String sql;
 	      stmt = conn.createStatement();
 	      sql = "SELECT * FROM wn_synset";
-	      
+	      int i=0;
 	      ResultSet rs = stmt.executeQuery(sql);
 	      String s = null ;
+	     
 	      while(rs.next()){
 	         //Retrieve by column name
 	         String  synset_id  = rs.getString("synset_id");
@@ -44,10 +45,18 @@ public class dataBase {
 	         Node new_node = new Node();
 	         get_antonyms(synset_id,wnum,new_node);
 	         get_gloss(synset_id,wnum,new_node);
+	         get_similar(synset_id,wnum,new_node);
 	         get_synonyms(synset_id,wnum,new_node);
 	     //    System.out.println("Completed!!!!");
+	        
+	         i++;
+	        // System.out.println(s+"number: "+i);
+	         new_node.origWord=s;
 	         tree.calInsert(s,new_node);
+	         
 	      } 
+	      //System.out.println("poo"+ i);
+	      tree.findWords();
 	      //STEP 6: Clean-up environment
 	      rs.close();
 	      
@@ -111,7 +120,7 @@ public class dataBase {
 	   }
 	   
 	   //////Get_synonyms/////////////
-	   private static void get_synonyms(String synset_id,String wnum,Node new_node) throws SQLException{
+	   private static void get_similar(String synset_id,String wnum,Node new_node) throws SQLException{
 		   String sql_data1;
 		   sql_data1 = "SELECT wn_similar.synset_id_1,  wn_synset.word FROM wn_similar "
 	         		+ " INNER JOIN wn_synset ON "
@@ -162,7 +171,7 @@ public class dataBase {
 	         {
 
 	        		 d_word = rs1.getString("gloss");
-	        		 new_node.meaning=(d_word);		//adding every antonym
+	        		 new_node.meaning.add(d_word);		//adding every antonym
 
 	         }
 	      //   System.out.println("meaning: "+new_node.meaning);
@@ -178,7 +187,38 @@ public class dataBase {
 	   
 	   
 	   }
+	   ///////Get_synonyms/////////////
+	   private static void get_synonyms(String synset_id,String wnum,Node new_node) throws SQLException{
+		   String sql_data1;
+		   sql_data1 = "SELECT  wn_synset.word FROM wn_synset "
+	         				+" WHERE wn_synset.synset_id = " +"'"+synset_id +"'"+ "and wn_synset.w_num != " + "'"+ wnum+"'";
+	         	         
+	         stmt = conn.createStatement();
+	         ResultSet rs1 = stmt.executeQuery(sql_data1);
+	         
+	         String d_word = null;//sql_ant_word for query and d_word is actual antonyms
+	      
+	         
+	         while(rs1.next())
+	         {
+
+	        		 d_word = rs1.getString("word");
+	        		 new_node.synonyms.add(d_word);		//adding every antonym
+
+	         }
+	         
+	      //   if(new_node.synonyms.size()>=1)
+	       //  {
+	      //  	System.out.println("Synonyms: "+new_node.synonyms);
+//	        	 new_node.print();
+	       //  }
+	        
+
+	         rs1.close();//i++;
+	      
 	   
+	   
+	   }
 	   
 	   
 	   
