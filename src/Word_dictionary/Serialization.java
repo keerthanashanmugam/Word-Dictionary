@@ -8,7 +8,7 @@ import java.io.ObjectOutputStream;
 
 public class Serialization {
 
-	public void seriaize(Object o) throws IOException{
+	public static void seriaize(Object o) throws IOException{
 		FileOutputStream fos = new FileOutputStream("Dictionary.txt");
 		ObjectOutputStream ois = new ObjectOutputStream(fos);
 		ois.writeObject(o);
@@ -16,7 +16,7 @@ public class Serialization {
 		ois.close();
 		fos.close();
 	}
-	public Object readDictionary() throws IOException, ClassNotFoundException{
+	public static Object readDictionary() throws IOException, ClassNotFoundException{
 		FileInputStream fin = new FileInputStream("Dictionary.txt");
 		ObjectInputStream oin = new ObjectInputStream(fin);
 		Object o = oin.readObject();
