@@ -1,5 +1,8 @@
 package Word_dictionary;
 
+import GUI;
+
+import java.awt.Dimension;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -13,6 +16,11 @@ public class Main {
 		TernarySearchTree s=(TernarySearchTree) Serialization.readDictionary();
 		System.out.println("yes");
 		Scanner in = new Scanner(System.in);
+		GUI G=new GUI(s);
+		G.setTitle("Word Dictionary");
+		G.setSize(new Dimension(300,400));
+		
+		G.setVisible(true);
 	/*	TernarySearchTree s = new TernarySearchTre																																													e();
 		s.calInsert("beatroot",new Node('s') );
 		s.calInsert("root", new Node('d'));
