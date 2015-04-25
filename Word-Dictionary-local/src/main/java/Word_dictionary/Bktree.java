@@ -2,22 +2,31 @@ package Word_dictionary;
 
 
 
+import java.io.Serializable;
 import java.util.List;
 
 
-class BkNode{
+class BkNode implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	String word;
 	BkNode[] Children;
 	public BkNode(String x){
 		x=x.toLowerCase();
-		Children=new BkNode[20];
+		Children=new BkNode[60];
 		word=x;
 	}
 }
 
 
 
-public class Bktree {
+public class Bktree implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	BkNode Root;
 	public void add(String word){
 		word=word.toLowerCase();
@@ -68,7 +77,7 @@ public class Bktree {
 	public void search(BkNode node,String word,List<String> correctwords,int tolerance){
 		
 		int k=getdistance(node.word, word);
-		System.out.println(node.word);
+	//	System.out.println(node.word);
 		if(k<=tolerance)
 			correctwords.add(node.word);
 		int mindist=0,maxdist=0;

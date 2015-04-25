@@ -117,7 +117,7 @@ public class TernarySearchTree implements Serializable{
 		//word = word.substring(0, word.length()-1);
 			
 		getListFrom(n.equalchild,lst,word,'\0');
-		System.out.println(lst);
+		
 		return lst;
 		
 	}

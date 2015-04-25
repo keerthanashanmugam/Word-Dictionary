@@ -13,7 +13,7 @@ public class dataBase {
 	   static Connection conn = null;
 	   static Statement stmt = null;
 	  // static TernarySearchTree tree;
-	   public static TernarySearchTree Make_Dictionary() {
+	   public static TernarySearchTree Make_Dictionary(Bktree BK) {
 	   
 		
 		TernarySearchTree tree = new TernarySearchTree();   
@@ -43,21 +43,24 @@ public class dataBase {
 	         String wnum = rs.getString("w_num");
 	         s = rs.getString("word");
 	         Node new_node = new Node();
-	         get_antonyms(synset_id,wnum,new_node);
+	      //   BkNode bk = new BkNode(s);
+	    /*    get_antonyms(synset_id,wnum,new_node);
 	         get_gloss(synset_id,wnum,new_node);
 	         get_similar(synset_id,wnum,new_node);
 	         get_synonyms(synset_id,wnum,new_node);
-	     //    System.out.println("Completed!!!!");
+	    */ //    System.out.println("Completed!!!!");
 	        
 	         i++;
 	         
 	        // System.out.println(s+"number: "+i);
 	         new_node.origWord=s;
-	         tree.calInsert(s,new_node);
+	       ////  tree.calInsert(s,new_node);
+	         BK.add(s);
+	         
 	         
 	      } 
 	      //System.out.println("poo"+ i);
-	      tree.findWords();
+	   ////   tree.findWords();
 	      //STEP 6: Clean-up environment
 	      rs.close();
 	      
