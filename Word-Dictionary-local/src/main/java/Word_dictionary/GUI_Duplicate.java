@@ -82,7 +82,7 @@ public class GUI_Duplicate  implements ActionListener{
 		
 		g=new GUI(s,bk);
 		g.setTitle("WordDictionary");
-		 Image image = new ImageIcon("index.jpeg").getImage();
+		 Image image = new ImageIcon("DicIcon.png").getImage();
 
 	        g.setIconImage(image);
 		g.setVisible(true);
@@ -134,7 +134,7 @@ public class GUI_Duplicate  implements ActionListener{
         }
 		 Ternaryworker.execute();
 	        BkTreeworker.execute();
-	        Image image = new ImageIcon("index.jpeg").getImage();
+	        Image image = new ImageIcon("DicIcon.png").getImage();
 
 	        g.setIconImage(image);
 	        g.setVisible(true);

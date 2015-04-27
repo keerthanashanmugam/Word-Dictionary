@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="lib/javassist-3.18.1-GA.jar"/>
 	<classpathentry kind="lib" path="lib/objenesis-2.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/home/keerthana/Desktop/projectcs2800/mysql-connector-java-5.0.8/mysql-connector-java-5.0.8-bin.jar"/>
+	<classpathentry kind="lib" path="/home/sahiti/Downloads/mysql-connector-java-5.0.8-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

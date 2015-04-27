@@ -68,7 +68,10 @@ public  class GUI extends JFrame{
 	JLayeredPane layer=new JLayeredPane();
 	JList Wordlist;
 	DefaultListModel<String> listModel=new DefaultListModel<String>();
-	
+	JButton meaningButton;
+	JButton synonymButton;
+	JButton antonymButton;
+	Node search_result;
 	public GUI(){
 		
 	}
@@ -84,10 +87,10 @@ public  class GUI extends JFrame{
 		BK = bk;
 		
 		System.out.println("entered");
-		this.setPreferredSize(new Dimension(600, 400));
+		this.setPreferredSize(new Dimension(610, 420));
 		this.setLayout(new BorderLayout());
 		this.add(layer,BorderLayout.CENTER);
-		layer.setBounds(0, 0, 600, 400);
+		layer.setBounds(0, 0, 700, 500);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		
 		GroupLayout layout = new GroupLayout(mainpanel);
@@ -97,13 +100,20 @@ public  class GUI extends JFrame{
 		Component textBox = getTextBox();
 		Component SearchButton = getSearchButton();
 		Component Scrollpane=gettextPane();
-			
+		Component MeaningButton=getmeaningButton();
+		Component SynonymButton=getSynonymButton();
+		Component AntonymButton=getAntonymButton();
 		layout.setHorizontalGroup(
 				layout.createParallelGroup()
 						.addGroup(layout.createSequentialGroup()
 								.addComponent(textBox,150,150,150)
 								.addComponent(SearchButton,100,100,100))
 						.addComponent(Scrollpane)
+						.addGroup(layout.createSequentialGroup()
+								.addComponent(MeaningButton,100,100,100)
+								.addComponent(SynonymButton,100,100,100)
+								.addComponent(AntonymButton,130,130,130)
+								)
 						);
 		layout.setVerticalGroup(
 				layout.createSequentialGroup()
@@ -111,6 +121,11 @@ public  class GUI extends JFrame{
 						.addComponent(textBox,30,30,30)
 						.addComponent(SearchButton,30,30,30))
 						.addComponent(Scrollpane)
+						.addGroup(layout.createParallelGroup()
+								.addComponent(MeaningButton,30,30,30)
+								.addComponent(SynonymButton,30,30,30)
+								.addComponent(AntonymButton,30,30,30)
+								)
 						);	
 	//	getContentPane().add(new JPanelWithBackground("index.jpeg"));
 		mainpanel.setBackground(Color.BLUE);
@@ -120,7 +135,7 @@ public  class GUI extends JFrame{
         SuggestionPanel.setBackground(Color.GREEN);
         Insets insets=query.getInsets();
         System.out.print(insets.left+" " +insets.right+ " "+ insets.top + " " + insets.bottom);
-        SuggestionPanel.setBounds(10, 40, 150, 300);
+        SuggestionPanel.setBounds(12, 40, 150, 150);
         SuggestionPanel.setOpaque(true);
         SuggestionPanel.setVisible(false);
         layer.add(mainpanel, new Integer(0), 0);
@@ -160,10 +175,11 @@ public  class GUI extends JFrame{
 				// TODO Auto-generated method stub
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 			        System.out.println("Sending ACTION_PERFORMED to ActionListener");
-			        String s=query.getText();
+			        String s=(String)Wordlist.getSelectedValue();
 			        try {
-			        	
-						Givetext(s);
+			        	query.setText(s);
+			        	search_result = t.search(t.root, s, 0);
+						Givetext(search_result,s);
 						
 					} catch (BadLocationException e1) {
 						// TODO Auto-generated catch block
@@ -183,6 +199,12 @@ public  class GUI extends JFrame{
 						System.out.println(i);
 						String s=(String)Wordlist.getModel().getElementAt(i+1);
 						query.setText(s);
+						try {
+							Givetempmeaning(s);
+						} catch (BadLocationException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 						if(i==-1)
 							Wordlist.setSelectedIndex(1);
 					}
@@ -193,6 +215,12 @@ public  class GUI extends JFrame{
 						System.out.println(i);
 						String s=(String)Wordlist.getModel().getElementAt(i-1);
 						query.setText(s);
+						try {
+							Givetempmeaning(s);
+						} catch (BadLocationException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 						if(i==-1)
 							Wordlist.setSelectedIndex(0);
 					}
@@ -220,7 +248,8 @@ public  class GUI extends JFrame{
 			public void actionPerformed(ActionEvent event) {
 				String s=query.getText();
 				try {
-					Givetext(s);
+					search_result = t.search(t.root, s, 0);
+					Givetext(search_result,s);
 				} catch (BadLocationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -229,6 +258,79 @@ public  class GUI extends JFrame{
 		});	
 		return searchButton;
 	}
+	
+	private JButton getmeaningButton() {
+		meaningButton=new JButton();
+		meaningButton.setText("Meaning");
+		meaningButton.addActionListener(new ActionListener() {
+		
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				String s=query.getText();
+				try {
+					search_result = t.search(t.root, s, 0);
+					Givetext(search_result,s);
+				} catch (BadLocationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});	
+		return meaningButton;
+	}
+	private JButton getSynonymButton() {
+		synonymButton=new JButton();
+		synonymButton.setText("Synonym");
+		synonymButton.addActionListener(new ActionListener() {
+		
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				String s=query.getText();
+				try {
+					if(s.equals(search_result.origWord))
+						GiveSynonym(search_result);
+					else{
+						search_result = t.search(t.root, s, 0);
+						GiveSynonym(search_result);
+						
+					}
+				} catch (BadLocationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});	
+		return synonymButton;
+	}
+	
+	private JButton getAntonymButton() {
+		antonymButton=new JButton();
+		antonymButton.setText("Anotonym");
+		antonymButton.addActionListener(new ActionListener() {
+		
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				String s=query.getText();
+				try {
+					if(s.equals(search_result.origWord))
+						GiveAntonym(search_result);
+					else{
+						search_result = t.search(t.root, s, 0);
+						GiveAntonym(search_result);
+						
+					}
+				} catch (BadLocationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});	
+		return antonymButton;
+	}
+	
+	
+	
+	
 	
 	private JTextField getTextBox() {
 		query=new JTextField();
@@ -264,8 +366,8 @@ public  class GUI extends JFrame{
 			        System.out.println("Sending ACTION_PERFORMED to ActionListener");
 			        String s=query.getText();
 			        try {
-			        	
-						Givetext(s);
+			        	search_result = t.search(t.root, s, 0);
+						Givetext(search_result,s);
 						
 					} catch (BadLocationException e1) {
 						// TODO Auto-generated catch block
@@ -349,7 +451,7 @@ public  class GUI extends JFrame{
     MutableAttributeSet style1 =context1.getStyle(StyleContext.DEFAULT_STYLE);
    
     
-	public void Givetext(String s) throws BadLocationException{
+	public void Givetext(Node search_result,String s) throws BadLocationException{
 		SuggestionPanel.setVisible(false);
 		StyleConstants.setAlignment(style, StyleConstants.ALIGN_RIGHT);
 	    StyleConstants.setFontSize(style, 14);
@@ -365,7 +467,7 @@ public  class GUI extends JFrame{
 	    StyleConstants.setSpaceBelow(style1, 4);
 	    StyleConstants.setBold(style1, false);
 	    StyleConstants.setUnderline(style1, false);
-	    Node search_result = t.search(t.root, s, 0);
+	    //Node search_result = t.search(t.root, s, 0);
 	    
 	    if(search_result == null ){
 	   
@@ -452,6 +554,232 @@ public  class GUI extends JFrame{
 	    text.setDocument(document);
 	    text.setEditable(false);
 	}
+	
+	
+	public void GiveSynonym(Node search_result) throws BadLocationException{
+		SuggestionPanel.setVisible(false);
+		StyleConstants.setAlignment(style, StyleConstants.ALIGN_RIGHT);
+	    StyleConstants.setFontSize(style, 14);
+	    StyleConstants.setFontFamily(style,"sans-serif");
+	    StyleConstants.setSpaceAbove(style, 4);
+	    StyleConstants.setSpaceBelow(style, 4);
+	    StyleConstants.setBold(style, true);
+	    StyleConstants.setUnderline(style, true);
+	    StyleConstants.setItalic(style, true);
+	    
+	    StyleConstants.setAlignment(style1, StyleConstants.ALIGN_RIGHT);
+	    StyleConstants.setFontSize(style1, 14);
+	    StyleConstants.setFontFamily(style,"Verdana");
+	    StyleConstants.setSpaceAbove(style1, 4);
+	    StyleConstants.setSpaceBelow(style1, 4);
+	    StyleConstants.setBold(style1, false);
+	    StyleConstants.setUnderline(style1, false);
+	    
+	    //Node search_result = t.search(t.root, s, 0);
+	    
+	    if( search_result.synonyms.isEmpty()  ){
+	    		
+	    	document.remove(0,document.getLength());
+	    	document.insertString(0, "No Synonyms Found", style);
+	    		
+	    	
+	    }
+	    else{
+	    document.remove(0,document.getLength());
+	    try {
+	    	String synonym = "";
+	    	
+	    	document.insertString(0, "Synonyms"+":\n", style);
+	    	int i;
+	    	//Iterator<String> lst = search_result.synonyms.iterator();
+	    	for(String s1:search_result.synonyms){
+	    		
+	    		System.out.println(s1);
+	    		document.insertString(document.getLength(),"->",style);
+	    		document.insertString(document.getLength(),s1+"\n",style1);
+	    		//document.insertString(document.getLength(),"Example"+":\n",style);
+	    		
+	    	}
+	    	
+	  
+	    	
+	    }
+	    catch (BadLocationException badLocationException) {
+	      System.err.println("Oops");
+	    }
+	    }
+
+	    text.setDocument(document);
+	    text.setEditable(false);
+	}
+	
+	public void GiveAntonym(Node search_result) throws BadLocationException{
+		SuggestionPanel.setVisible(false);
+		StyleConstants.setAlignment(style, StyleConstants.ALIGN_RIGHT);
+	    StyleConstants.setFontSize(style, 14);
+	    StyleConstants.setFontFamily(style,"sans-serif");
+	    StyleConstants.setSpaceAbove(style, 4);
+	    StyleConstants.setSpaceBelow(style, 4);
+	    StyleConstants.setBold(style, true);
+	    StyleConstants.setUnderline(style, true);
+	    StyleConstants.setItalic(style, true);
+	    
+	    StyleConstants.setAlignment(style1, StyleConstants.ALIGN_RIGHT);
+	    StyleConstants.setFontSize(style1, 14);
+	    StyleConstants.setFontFamily(style,"Verdana");
+	    StyleConstants.setSpaceAbove(style1, 4);
+	    StyleConstants.setSpaceBelow(style1, 4);
+	    StyleConstants.setBold(style1, false);
+	    StyleConstants.setUnderline(style1, false);
+	   // Node search_result = t.search(t.root, s, 0);
+	    
+	    if( search_result.antonyms.isEmpty()  ){
+	    		
+	    	document.remove(0,document.getLength());
+	    	document.insertString(0, "No Antonyms Found", style);
+	    
+	    	
+	    }
+	    else{
+	    document.remove(0,document.getLength());
+	    try {
+	    	String synonym = "";
+	    	
+	    	document.insertString(0, "Antonym"+":\n", style);
+	    	int i;
+	    	//Iterator<String> lst = search_result.antonyms.iterator();
+	    	for(String s1:search_result.antonyms){
+	    		    		
+	    		document.insertString(document.getLength(),"->",style);
+	    		document.insertString(document.getLength(),s1+"\n",style1);
+	    		//document.insertString(document.getLength(),"Example"+":\n",style);
+	    		System.out.println(s1);
+	    	}
+	    	
+	  
+	    	
+	    }
+	    catch (BadLocationException badLocationException) {
+	      System.err.println("Oops");
+	    }
+	    }
+
+	    text.setDocument(document);
+	    text.setEditable(false);
+	}
+	
+	
+	public void Givetempmeaning(String s) throws BadLocationException{
+		
+		StyleConstants.setAlignment(style, StyleConstants.ALIGN_RIGHT);
+	    StyleConstants.setFontSize(style, 14);
+	    StyleConstants.setSpaceAbove(style, 4);
+	    StyleConstants.setSpaceBelow(style, 4);
+	    StyleConstants.setBold(style, true);
+	    StyleConstants.setUnderline(style, true);
+	    StyleConstants.setItalic(style, true);
+	    
+	    StyleConstants.setAlignment(style1, StyleConstants.ALIGN_RIGHT);
+	    StyleConstants.setFontSize(style1, 14);
+	    StyleConstants.setSpaceAbove(style1, 4);
+	    StyleConstants.setSpaceBelow(style1, 4);
+	    StyleConstants.setBold(style1, false);
+	    StyleConstants.setUnderline(style1, false);
+	    Node search_result = t.search(t.root, s, 0);
+	    
+	    if(search_result == null ){
+	   
+	    	document.remove(0,document.getLength());
+	    	ArrayList<String> correct = new ArrayList<String>();
+	    	BK.search(BK.Root, s, correct, 1);
+
+		    try {
+		    	String meaning = "";
+		    	document.insertString(document.getLength(), "                                          ", null);
+		    	document.insertString(document.getLength(), "Suggested Words"+":\n", style);
+		    	document.insertString(document.getLength(), "                                          ", null);
+		    	System.out.println(correct);
+		    	ListIterator<String> lst = correct.listIterator();
+		    	int i;
+		    	while(lst.hasNext()){
+		    		String oneWord = lst.next();
+		    		
+		    		document.insertString(document.getLength(),"->",style);
+		    		document.insertString(document.getLength(),oneWord+"\n",style1);
+		    		document.insertString(document.getLength(), "                                               ", null);
+		    	}
+		    			    	
+		    }
+		    catch (BadLocationException badLocationException) {
+		      System.err.println("Oops");
+		    }
+	    	
+	    }
+	    else if( search_result.meaning.isEmpty()  ){
+	    		
+	    	document.remove(0,document.getLength());
+	    	ArrayList<String> correct = new ArrayList<String>();
+	    	BK.search(BK.Root, s, correct, 1);
+
+		    try {
+		    	String meaning = "";
+		    	document.insertString(document.getLength(), "                               ", null);
+		    	document.insertString(document.getLength(), "Suggested Words"+":\n", style);
+		    	document.insertString(document.getLength(), "                                     ", null);
+		    	System.out.println(correct);
+		    	ListIterator<String> lst = correct.listIterator();
+		    	while(lst.hasNext()){
+		    		String oneWord = lst.next();
+		    		document.insertString(document.getLength(),"->",style);
+		    		document.insertString(document.getLength(),oneWord+"\n",style1);
+		    		document.insertString(document.getLength(), "                               ", null);
+		    	}
+		    			    	
+		    }
+		    catch (BadLocationException badLocationException) {
+		      System.err.println("Oops");
+		    }
+	    	
+	    }
+	    else{
+	    document.remove(0,document.getLength());
+	    try {
+	    	String meaning = "";
+	    	document.insertString(document.getLength(), "                                      ", null);
+	    	document.insertString(document.getLength(), "Meaning"+":\n", style);
+	    	int i;
+	    	ListIterator<String> lst = search_result.meaning.listIterator();
+	    	while(lst.hasNext()){
+	    		String oneMeaning = lst.next();
+	    		String[] words=oneMeaning.split(";");
+	    		document.insertString(document.getLength(),"->",style);
+	    		document.insertString(document.getLength(),words[0]+"\n",style1);
+	    		document.insertString(document.getLength(), "                                       ", null);
+	    		document.insertString(document.getLength(),"Example"+":\n",style);
+	    		document.insertString(document.getLength(), "                                        ", null);
+	    		for(i=1;i<words.length;i++){
+	    			document.insertString(document.getLength(),words[i]+"\n",style1);
+	    			document.insertString(document.getLength(), "                                       ", null);
+	    			
+	    		}
+	    	}
+	    	
+	  //  	document.insertString(document.getLength(), " cfdd\n", null);
+	  //  	document.insertString(document.getLength(), s+" \n", style1);
+	    	
+	    }
+	    catch (BadLocationException badLocationException) {
+	      System.err.println("Oops");
+	    }
+	    }
+//		JScrollPane scrollpane = new JScrollPane(text,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+//	            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+//		this.getContentPane().add(scrollpane,BorderLayout.CENTER);
+	    text.setDocument(document);
+	    text.setEditable(false);
+	}
+	
+	
 	public JScrollPane gettextPane() throws IOException{
 		text=new JTextPane();
 		JScrollPane scrollpane = new JScrollPane(text);
